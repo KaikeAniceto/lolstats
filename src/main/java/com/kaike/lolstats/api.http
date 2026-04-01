@@ -1,0 +1,12 @@
+GET http://localhost:8080/games
+Accept: application/json
+
+###
+POST http://localhost:8080/games/import/TelTelTel/BR1
+
+###
+DELETE http://localhost:8080/games/1
+
+
+
+
