@@ -4,8 +4,6 @@ Uma aplicação Full-Stack desenvolvida para buscar e exibir estatísticas de jo
 
 ## 🛠️ Tecnologias Utilizadas
 
-O projeto foi construído dividindo as responsabilidades entre um backend robusto em Java e uma interface moderna e responsiva em React.
-
 **Frontend:**
 * React.js (com Vite para build ultrarrápido)
 * CSS3 customizado com tema inspirado no design do League of Legends
@@ -15,50 +13,46 @@ O projeto foi construído dividindo as responsabilidades entre um backend robust
 * Java 21
 * Spring Boot (Web, JPA)
 * H2 Database (Banco de dados em memória para testes rápidos)
-* Jackson (`tools.jackson`) para desserialização segura de JSON
+* Jackson para desserialização segura de JSON
 * Springdoc / Swagger para documentação da API
-
-**Integrações:**
-* Riot Games API (Endpoints de Account e Match V5)
-
-## ✨ Funcionalidades
-
-- **Busca de Invocadores:** Integração em três etapas com a Riot API para converter o Riot ID em PUUID, buscar o ID da última partida e, finalmente, extrair os detalhes.
-- **Extração de Dados:** Cálculo de Kills, Deaths, Assists (KDA) e resultado da partida (Vitória/Derrota).
-- **Persistência de Dados:** Toda busca bem-sucedida é salva automaticamente no banco de dados H2.
-- **Proteção de Cors:** Backend configurado para permitir requisições seguras do frontend local.
 
 ## 🚀 Como Executar o Projeto
 
 ### Pré-requisitos
-Antes de começar, você vai precisar ter instalado em sua máquina as seguintes ferramentas:
+Antes de começar, você vai precisar ter instalado:
 * [Java JDK 21+](https://jdk.java.net/21/)
 * [Node.js](https://nodejs.org/en/)
-* Uma chave de desenvolvedor válida da [Riot Games](https://developer.riotgames.com/)
+* Uma chave válida da [Riot Games](https://developer.riotgames.com/)
 
 ### 1. Rodando o Backend (Spring Boot)
 
-Abra o terminal na pasta `backend` e exporte a sua chave da Riot Games como uma variável de ambiente:
+Abra o terminal na pasta `backend` e exporte a sua chave da Riot Games:
 
 **No PowerShell (Windows):**
 ```bash
 $env:RIOT_KEY="RGAPI-sua-chave-aqui"
+```
 
-**No Bash:**
+**No Bash (Linux/Mac/Git Bash):**
+```bash
 export RIOT_KEY="RGAPI-sua-chave-aqui"
+```
 
-Em seguida inicie o servidor
+Em seguida, inicie o servidor:
+```bash
 ./mvnw spring-boot:run
+```
+O Swagger ficará disponível em: `http://localhost:8080/swagger-ui/index.html`
 
- 2.Rodando o Frontend (React)
-Abra um novo terminal na pasta frontend (onde está o arquivo package.json) e instale as dependências:
+### 2. Rodando o Frontend (React)
 
-**No Bash:**
+Abra um novo terminal na pasta `frontend` e instale as dependências:
+```bash
 npm install
+```
+
 Inicie o servidor de desenvolvimento:
-
-**No Bash:**
+```bash
 npm run dev
-A interface ficará disponível no seu navegador, geralmente no endereço http://localhost:5173.
-
-Desenvolvido por Kaike.
+```
+A interface ficará disponível em `http://localhost:5173`.
