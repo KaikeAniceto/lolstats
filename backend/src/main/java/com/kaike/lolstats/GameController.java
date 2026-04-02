@@ -2,11 +2,13 @@
 
     import org.springframework.beans.factory.annotation.Autowired;
     import org.springframework.web.bind.annotation.*;
+   
 
     import java.util.List;
 
     @RestController
     @RequestMapping("/games")
+    @CrossOrigin(origins = "*")
     public class GameController {
         @Autowired
         private GameService service;
@@ -35,15 +37,15 @@
             return service.updateGames(id, updatedGame);
         }
 
-        @PostMapping("import/{gameName}/{tagLine}")
-        public Game importLastGame(@PathVariable String gameName, @PathVariable String tagLine) {
-            String puuid = riotService.searchPuuid(gameName, tagLine);
+      @PostMapping("/import/{gameName}/{tagLine}")
+    public Game importLastGame(@PathVariable String gameName, @PathVariable String tagLine) {
+        
+        String puuid = riotService.searchPuuid(gameName, tagLine);   
 
-            String matchId = riotService.searchLastGameId(puuid);
+        String matchId = riotService.searchLastGameId(puuid);
 
-            Game realGame = riotService.searchMatchDetails(matchId, puuid);
+        Game realGame = riotService.searchMatchDetails(matchId, puuid);
 
-            return service.saveGames(realGame);
-        }
-
+        return service.saveGames(realGame);
     }
+}

@@ -1,47 +1,53 @@
-package com.kaike.lolstats;
+ package com.kaike.lolstats;
 
+import tools.jackson.databind.JsonNode;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import tools.jackson.databind.JsonNode;
 
 @Service
 public class RiotService {
-    @Value("${riot.api.key}")
-    String apiKey;
 
+    @Value("${riot.api.key}")
+    private String apiKey;
 
     private final RestTemplate restTemplate = new RestTemplate();
 
-    public String searchPuuid(String gameName, String tagLine) {
+    private HttpEntity<Void> authHeader() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("X-Riot-Token", apiKey);
+        return new HttpEntity<>(headers);
+    }
 
-        String url = String.format("https://americas.api.riotgames.com/riot/account/v1/accounts/by-riot-id/%s/%s?api_key=%s",
-        gameName,
-        tagLine,
-        apiKey
+    public String searchPuuid(String gameName, String tagLine) {
+        String url = String.format(
+            "https://americas.api.riotgames.com/riot/account/v1/accounts/by-riot-id/%s/%s",
+            gameName, tagLine
         );
-        JsonNode response = restTemplate.getForObject(url, JsonNode.class);
-        return  response.get("puuid").asText();
+        ResponseEntity<JsonNode> response = restTemplate.exchange(url, HttpMethod.GET, authHeader(), JsonNode.class);
+        return response.getBody().get("puuid").asText();
     }
 
     public String searchLastGameId(String puuid) {
-        String url = String.format("https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/%s/ids?start=0&count=1&api_key=%s",
-        puuid,
-        apiKey
+        String url = String.format(
+            "https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/%s/ids?start=0&count=1",
+            puuid
         );
-        String[] games = restTemplate.getForObject(url, String[].class);
-        return games[0];
+        ResponseEntity<String[]> response = restTemplate.exchange(url, HttpMethod.GET, authHeader(), String[].class);
+        return response.getBody()[0];
     }
 
     public Game searchMatchDetails(String matchId, String puuid) {
-        String url = String.format("https://americas.api.riotgames.com/lol/match/v5/matches/%s?api_key=%s",
-        matchId,
-        apiKey
+        String url = String.format(
+            "https://americas.api.riotgames.com/lol/match/v5/matches/%s",
+            matchId
         );
-
-        JsonNode response = restTemplate.getForObject(url, JsonNode.class);
-
-        JsonNode players = response.get("info").get("participants");
+        ResponseEntity<JsonNode> response = restTemplate.exchange(url, HttpMethod.GET, authHeader(), JsonNode.class);
+        JsonNode players = response.getBody().get("info").get("participants");
 
         for (JsonNode player : players) {
             if (player.get("puuid").asText().equals(puuid)) {
